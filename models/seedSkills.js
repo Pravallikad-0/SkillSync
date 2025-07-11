@@ -1,18 +1,10 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-
-// Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-// Import Skill model
 const Skill = require('./Skill');
-
-// MongoDB connection URI
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Pravallikad:maE1hzb7mkw9COls@cluster0.mxb5sfx.mongodb.net/skillsync?retryWrites=true&w=majority&appName=Cluster0';
-
+const MONGODB_URI = YOUR_MONGODB_URL;
 const seedSkills = [
-  // Technology Skills (Premium)
   {
     name: 'Machine Learning',
     category: 'Technology',
@@ -85,8 +77,6 @@ const seedSkills = [
     estimatedTime: '8-12 hours',
     popularity: 92
   },
-
-  // Free Technology Skills
   {
     name: 'HTML',
     category: 'Technology',
@@ -132,8 +122,6 @@ const seedSkills = [
     estimatedTime: '3-5 hours',
     popularity: 75
   },
-
-  // Design Skills
   {
     name: 'Graphic Design',
     category: 'Design',
@@ -161,8 +149,6 @@ const seedSkills = [
     estimatedTime: '2-3 hours',
     popularity: 60
   },
-
-  // Business Skills
   {
     name: 'Digital Marketing',
     category: 'Business',
@@ -190,8 +176,6 @@ const seedSkills = [
     estimatedTime: '2-4 hours',
     popularity: 55
   },
-
-  // Language Skills
   {
     name: 'Spanish',
     category: 'Language',
@@ -219,8 +203,6 @@ const seedSkills = [
     estimatedTime: '2-3 hours',
     popularity: 50
   },
-
-  // Health & Fitness
   {
     name: 'Yoga',
     category: 'Health',
@@ -248,8 +230,6 @@ const seedSkills = [
     estimatedTime: '1-2 hours',
     popularity: 48
   },
-
-  // Arts & Creative
   {
     name: 'Photography',
     category: 'Arts',
@@ -278,19 +258,13 @@ const seedSkills = [
     popularity: 65
   }
 ];
-
 mongoose.connect(MONGODB_URI)
   .then(async () => {
     console.log('Connected to MongoDB');
-
-    // Clear old skills
     await Skill.deleteMany({});
     console.log('Old skills removed');
-
-    // Insert new skills
     await Skill.insertMany(seedSkills);
     console.log('Sample skills added');
-
     mongoose.disconnect();
   })
   .catch((err) => {
