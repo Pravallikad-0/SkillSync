@@ -8,10 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div id="app">
-        <!-- Navigation -->
         <nav class="navbar" id="navbar">
             <div class="nav-container">
                 <div class="nav-brand">
@@ -35,10 +33,7 @@
                 </div>
             </div>
         </nav>
-
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Home Section -->
             <section id="home" class="section active">
                 <div class="hero">
                     <div class="hero-content">
@@ -68,7 +63,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="features">
                     <h2>Why Choose SkillSync?</h2>
                     <div class="feature-grid">
@@ -103,8 +97,6 @@
                     <div class="skill-tags" id="popularSkillsHome"></div>
                 </div>
             </section>
-
-            <!-- Login Section -->
             <section id="login" class="section">
                 <div class="auth-container">
                     <div class="auth-card">
@@ -128,8 +120,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Register Section -->
             <section id="register" class="section">
                 <div class="auth-container">
                     <div class="auth-card">
@@ -178,8 +168,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Browse Skills Section -->
             <section id="browse" class="section">
                 <div class="browse-container">
                     <div class="browse-header">
@@ -205,8 +193,6 @@
                     <div class="users-grid" id="usersGrid"></div>
                 </div>
             </section>
-
-            <!-- Profile Section -->
             <section id="profile" class="section">
                 <div class="profile-container">
                     <div class="profile-header">
@@ -234,7 +220,6 @@
                         </div>
                         <button class="btn btn-primary" onclick="showEditProfile()">Edit Profile</button>
                     </div>
-
                     <div class="profile-skills">
                         <div class="skills-section">
                             <h3>Skills I Can Teach</h3>
@@ -245,7 +230,6 @@
                             <div class="skill-tags" id="profileSkillsLearn"></div>
                         </div>
                     </div>
-
                     <div class="subscription-section">
                         <h3>Subscription Plan</h3>
                         <div class="subscription-info" id="subscriptionInfo">
@@ -262,8 +246,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Requests Section -->
             <section id="requests" class="section">
                 <div class="requests-container">
                     <h2>My Requests</h2>
@@ -274,8 +256,6 @@
                     <div class="requests-list" id="requestsList"></div>
                 </div>
             </section>
-
-            <!-- Leaderboard Section -->
             <section id="leaderboard" class="section">
                 <div class="leaderboard-container">
                     <h2>Leaderboard</h2>
@@ -287,15 +267,12 @@
                 </div>
             </section>
         </main>
-
-        <!-- Modals -->
         <div id="userModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('userModal')">&times;</span>
                 <div class="modal-body" id="userModalBody"></div>
             </div>
         </div>
-
         <div id="requestModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('requestModal')">&times;</span>
@@ -321,7 +298,6 @@
                 </div>
             </div>
         </div>
-
         <div id="subscriptionModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('subscriptionModal')">&times;</span>
@@ -367,7 +343,6 @@
                 </div>
             </div>
         </div>
-
         <div id="premiumRequiredModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('premiumRequiredModal')">&times;</span>
@@ -424,8 +399,6 @@
         </div>
     </div>
 </div>
-
-
         <div id="ratingModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('ratingModal')">&times;</span>
@@ -455,7 +428,6 @@
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 
