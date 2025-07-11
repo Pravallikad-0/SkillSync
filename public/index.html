@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSync - Micro-Skill Swapping Network</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1>SkillSync</h1>
+                    <span class="brand-tagline">Micro-Skill Swapping</span>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <a href="#" onclick="showSection('home')">Home</a>
+                    <a href="#" onclick="showSection('browse')">Browse Skills</a>
+                    <a href="#" onclick="showSection('requests')">My Requests</a>
+                    <a href="#" onclick="showSection('profile')">Profile</a>
+                    <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
+                </div>
+                <div class="nav-auth" id="navAuth">
+                    <button class="btn btn-outline" onclick="showSection('login')">Login</button>
+                    <button class="btn btn-primary" onclick="showSection('register')">Sign Up</button>
+                </div>
+                <div class="nav-user" id="navUser" style="display: none;">
+                    <span class="user-name" id="userNameNav"></span>
+                    <button class="btn btn-outline" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="hero">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Master New Skills Through <span class="gradient-text">Peer
+                                Exchange</span></h1>
+                        <p class="hero-description">Connect with skilled individuals worldwide. Teach what you know,
+                            learn what you need. Build your skill karma in our collaborative learning community.</p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary btn-large" onclick="showSection('register')">Start Learning
+                                Today</button>
+                            <button class="btn btn-outline btn-large" onclick="showSection('browse')">Browse
+                                Skills</button>
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Active Learners</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="totalSkills">0</h3>
+                            <p>Skills Available</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="totalExchanges">0</h3>
+                            <p>Successful Exchanges</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="features">
+                    <h2>Why Choose SkillSync?</h2>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎓</div>
+                            <h3>Learn Anything</h3>
+                            <p>From Excel to AI, from cooking to coding. Our community offers diverse micro-skills for
+                                every interest.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🤝</div>
+                            <h3>Fair Exchange</h3>
+                            <p>Share your knowledge and gain new skills. Our karma system ensures balanced, quality
+                                exchanges.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⭐</div>
+                            <h3>Quality Assured</h3>
+                            <p>Rating system and peer reviews help you find the best teachers and maintain high
+                                standards.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🚀</div>
+                            <h3>Quick Results</h3>
+                            <p>Focused micro-learning sessions deliver practical skills you can apply immediately.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="popular-skills">
+                    <h2>Popular Skills</h2>
+                    <div class="skill-tags" id="popularSkillsHome"></div>
+                </div>
+            </section>
+
+            <!-- Login Section -->
+            <section id="login" class="section">
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to continue your learning journey</p>
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="loginEmail">Email</label>
+                                <input type="email" id="loginEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Password</label>
+                                <input type="password" id="loginPassword" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                        </form>
+                        <p class="auth-switch">
+                            Don't have an account?
+                            <a href="#" onclick="showSection('register')">Sign up here</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Register Section -->
+            <section id="register" class="section">
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <h2>Join SkillSync</h2>
+                        <p>Create your account and start learning</p>
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label for="registerName">Full Name</label>
+                                <input type="text" id="registerName" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerEmail">Email</label>
+                                <input type="email" id="registerEmail" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPhone">Phone Number</label>
+                                <input type="tel" id="registerPhone" name="phone" required placeholder="+1-555-0123">
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPassword">Password</label>
+                                <input type="password" id="registerPassword" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerBio">Bio (Optional)</label>
+                                <textarea id="registerBio" name="bio" rows="3"
+                                    placeholder="Tell us about yourself..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerSkillsTeach">Skills You Can Teach</label>
+                                <input type="text" id="registerSkillsTeach" name="skillsToTeach"
+                                    placeholder="e.g., Excel, JavaScript, Cooking">
+                                <small>Separate skills with commas</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerSkillsLearn">Skills You Want to Learn</label>
+                                <input type="text" id="registerSkillsLearn" name="skillsToLearn"
+                                    placeholder="e.g., AI, Python, Photography">
+                                <small>Separate skills with commas</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                        </form>
+                        <p class="auth-switch">
+                            Already have an account?
+                            <a href="#" onclick="showSection('login')">Sign in here</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Browse Skills Section -->
+            <section id="browse" class="section">
+                <div class="browse-container">
+                    <div class="browse-header">
+                        <h2>Browse Skills</h2>
+                        <div class="search-filters">
+                            <input type="text" id="searchSkills" placeholder="Search skills or users..."
+                                class="search-input">
+                            <select id="sortBy" class="filter-select">
+                                <option value="karma">Sort by Karma</option>
+                                <option value="rating">Sort by Rating</option>
+                                <option value="recent">Recently Active</option>
+                            </select>
+                            <select id="filterPremium" class="filter-select">
+                                <option value="">All Users</option>
+                                <option value="true">Premium Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="popular-skills-filter">
+                        <h3>Popular Skills</h3>
+                        <div class="skill-tags" id="popularSkillsFilter"></div>
+                    </div>
+                    <div class="users-grid" id="usersGrid"></div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="section">
+                <div class="profile-container">
+                    <div class="profile-header">
+                         <div class="profile-avatar">
+                            <div class="avatar-placeholder" id="profileAvatar"></div>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profileName"></h2>
+                            <p id="profileBio"></p>
+                            <p id="profilePhone"></p>
+                            <div class="profile-stats">
+                                <div class="stat">
+                                    <span class="stat-value" id="profileKarma">0</span>
+                                    <span class="stat-label">Skill Karma</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="profileRating">0.0</span>
+                                    <span class="stat-label">Average Rating</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="profileTotalRatings">0</span>
+                                    <span class="stat-label">Total Ratings</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showEditProfile()">Edit Profile</button>
+                    </div>
+
+                    <div class="profile-skills">
+                        <div class="skills-section">
+                            <h3>Skills I Can Teach</h3>
+                            <div class="skill-tags" id="profileSkillsTeach"></div>
+                        </div>
+                        <div class="skills-section">
+                            <h3>Skills I Want to Learn</h3>
+                            <div class="skill-tags" id="profileSkillsLearn"></div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-section">
+                        <h3>Subscription Plan</h3>
+                        <div class="subscription-info" id="subscriptionInfo">
+                            <div class="current-plan">
+                                <span class="plan-name" id="currentPlan">Free Plan</span>
+                                <span class="plan-status" id="planStatus">Active</span>
+                            </div>
+                            <button class="btn btn-primary" onclick="showSubscriptionModal()">Upgrade Plan</button>
+                        </div>
+                    </div>
+                    <div class="profile-ratings">
+                        <h3>Recent Ratings</h3>
+                        <div class="ratings-list" id="profileRatings"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Requests Section -->
+            <section id="requests" class="section">
+                <div class="requests-container">
+                    <h2>My Requests</h2>
+                    <div class="requests-tabs">
+                        <button class="tab-btn active" onclick="showRequests(event, 'sent')">Sent Requests</button>
+                        <button class="tab-btn" onclick="showRequests(event, 'received')">Received Requests</button>
+                    </div>
+                    <div class="requests-list" id="requestsList"></div>
+                </div>
+            </section>
+
+            <!-- Leaderboard Section -->
+            <section id="leaderboard" class="section">
+                <div class="leaderboard-container">
+                    <h2>Leaderboard</h2>
+                    <div class="leaderboard-tabs">
+                        <button class="tab-btn active" onclick="showLeaderboard('karma')">Top Karma</button>
+                        <button class="tab-btn" onclick="showLeaderboard('rating')">Top Rated</button>
+                    </div>
+                    <div class="leaderboard-list" id="leaderboardList"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modals -->
+        <div id="userModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('userModal')">&times;</span>
+                <div class="modal-body" id="userModalBody"></div>
+            </div>
+        </div>
+
+        <div id="requestModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('requestModal')">&times;</span>
+                <div class="modal-body">
+                    <h3>Send Skill Request</h3>
+                    <form id="requestForm" onsubmit="handleSendRequest(event)">
+                        <input type="hidden" id="requestTeacherId">
+                        <div class="form-group">
+                            <label for="requestSkill">Skill Requested</label>
+                            <select id="requestSkill" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="requestOffered">Skill You Can Offer (Optional)</label>
+                            <input type="text" id="requestOffered" placeholder="What can you teach in return?">
+                        </div>
+                        <div class="form-group">
+                            <label for="requestMessage">Message</label>
+                            <textarea id="requestMessage" rows="4"
+                                placeholder="Tell them why you want to learn this skill..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="subscriptionModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('subscriptionModal')">&times;</span>
+                <div class="modal-body">
+                    <h3>Choose Your Subscription Plan</h3>
+                    <div class="subscription-plans">
+                        <div class="plan-card free-plan">
+                            <h4>Free Plan</h4>
+                            <div class="plan-price">$0<span>/month</span></div>
+                            <ul class="plan-features">
+                                <li>✓ Basic skill access</li>
+                                <li>✓ Community support</li>
+                                <li>✗ Premium skills</li>
+                                <li>✗ Premium teachers</li>
+                            </ul>
+                            <button class="btn btn-outline" onclick="subscribeToPlan('free')">Current Plan</button>
+                        </div>
+                        <div class="plan-card monthly-plan">
+                            <h4>Monthly Plan</h4>
+                            <div class="plan-price">$9.99<span>/month</span></div>
+                            <ul class="plan-features">
+                                <li>✓ All free features</li>
+                                <li>✓ Premium skills access</li>
+                                <li>✓ Premium teachers</li>
+                                <li>✓ Priority support</li>
+                            </ul>
+                            <button class="btn btn-primary" onclick="subscribeToPlan('monthly')">Subscribe</button>
+                        </div>
+                        <div class="plan-card yearly-plan popular">
+                            <div class="popular-badge">Most Popular</div>
+                            <h4>Yearly Plan</h4>
+                            <div class="plan-price">$99.99<span>/year</span></div>
+                            <div class="plan-savings">Save 17%!</div>
+                            <ul class="plan-features">
+                                <li>✓ All monthly features</li>
+                                <li>✓ Exclusive workshops</li>
+                                <li>✓ Advanced analytics</li>
+                                <li>✓ 20% discount on extras</li>
+                            </ul>
+                            <button class="btn btn-primary" onclick="subscribeToPlan('yearly')">Subscribe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="premiumRequiredModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('premiumRequiredModal')">&times;</span>
+                <div class="modal-body">
+                    <div class="premium-required-content">
+                        <div class="premium-icon">🔒</div>
+                        <h3>Premium Access Required</h3>
+                        <p id="premiumRequiredMessage">This feature requires a premium subscription.</p>
+                        <div class="premium-benefits">
+                            <h4>Premium Benefits:</h4>
+                            <ul>
+                                <li>✓ Access to premium skills</li>
+                                <li>✓ Learn from premium teachers</li>
+                                <li>✓ Priority support</li>
+                                <li>✓ Advanced features</li>
+                            </ul>
+                        </div>
+                        <div class="premium-actions">
+                            <button class="btn btn-primary" onclick="showSubscriptionModal(); closeModal('premiumRequiredModal')">Upgrade Now</button>
+                            <button class="btn btn-outline" onclick="closeModal('premiumRequiredModal')">Maybe Later</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       <div id="editProfileModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('editProfileModal')">&times;</span>
+        <div class="modal-body">
+            <h3>Edit Profile</h3>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="editName">Name</label>
+                    <input type="text" id="editName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">Phone Number</label>
+                    <input type="tel" id="editPhone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="editBio">Bio</label>
+                    <textarea id="editBio" name="bio" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editSkillsTeach">Skills You Can Teach</label>
+                    <input type="text" id="editSkillsTeach" name="skillsToTeach" placeholder="Separate with commas">
+                </div>
+                <div class="form-group">
+                    <label for="editSkillsLearn">Skills You Want to Learn</label>
+                    <input type="text" id="editSkillsLearn" name="skillsToLearn" placeholder="Separate with commas">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+        <div id="ratingModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('ratingModal')">&times;</span>
+                <div class="modal-body">
+                    <h3>Rate Your Experience</h3>
+                    <form id="ratingForm" onsubmit="handleSubmitRating(event)">
+                        <input type="hidden" id="ratingRequestId">
+                        <input type="hidden" id="ratingRateeId">
+                        <input type="hidden" id="ratingSkill">
+                        <div class="form-group">
+                            <label>Rating</label>
+                            <div class="star-rating" id="starRating">
+                                <span class="star" data-rating="1">★</span>
+                                <span class="star" data-rating="2">★</span>
+                                <span class="star" data-rating="3">★</span>
+                                <span class="star" data-rating="4">★</span>
+                                <span class="star" data-rating="5">★</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ratingComment">Comment</label>
+                            <textarea id="ratingComment" rows="4" placeholder="Share your experience..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Rating</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
