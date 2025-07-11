@@ -1,22 +1,15 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-
-// Load environment variables
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-// Import User model from models folder
 const User = require('./User');
-
-// MongoDB connection URI
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Pravallikad:maE1hzb7mkw9COls@cluster0.mxb5sfx.mongodb.net/skillsync?retryWrites=true&w=majority&appName=Cluster0';
-
+const MONGODB_URI = YOUR_MONGODB_URL
 const seedUsers = [
   {
     name: 'Alice Kumar',
     email: 'alice@example.com',
     phone: '+1-555-0101',
-    password: 'hashedpassword1', // Make sure to hash in production
+    password: 'hashedpassword1', 
     bio: 'Passionate about web development.',
     skillsToTeach: ['React', 'CSS', 'Machine Learning'],
     skillsToLearn: ['Node.js'],
@@ -152,15 +145,10 @@ const seedUsers = [
 mongoose.connect(MONGODB_URI)
   .then(async () => {
     console.log('Connected to MongoDB');
-
-    // Clear old data (optional)
     await User.deleteMany({});
     console.log('Old users removed');
-
-    // Insert new users
     await User.insertMany(seedUsers);
     console.log('Sample users added');
-
     mongoose.disconnect();
   })
   .catch((err) => {
