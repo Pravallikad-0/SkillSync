@@ -4,8 +4,6 @@ const Skill = require('../models/Skill');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
-
-// Get all skills with premium filtering
 router.get('/', async (req, res) => {
   try {
     const { premium, category } = req.query;
@@ -30,7 +28,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Check if user can access a skill
 router.get('/access/:skillName', authenticateToken, async (req, res) => {
   try {
     const { skillName } = req.params;
@@ -56,10 +53,9 @@ router.get('/access/:skillName', authenticateToken, async (req, res) => {
   }
 });
 
-// Get popular skills
 router.get('/popular', async (req, res) => {
   try {
-    // Aggregate skills from all users
+   
     const teachableSkills = await User.aggregate([
       { $unwind: '$skillsToTeach' },
       { $group: { _id: '$skillsToTeach', count: { $sum: 1 } } },
@@ -84,7 +80,6 @@ router.get('/popular', async (req, res) => {
   }
 });
 
-// Get skill suggestions
 router.get('/suggestions', async (req, res) => {
   try {
     const { q } = req.query;
