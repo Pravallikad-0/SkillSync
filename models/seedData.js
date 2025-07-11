@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const User = require('./User');
-const MONGODB_URI = YOUR_MONGODB_URL
+const MONGODB_URI = YOUR_MONGODB_URL;
 const seedUsers = [
   {
     name: 'Alice Kumar',
