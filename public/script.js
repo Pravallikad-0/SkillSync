@@ -4,15 +4,11 @@ let currentSection = 'home';
 let currentRequestsTab = 'sent';
 let currentLeaderboardTab = 'karma';
 let selectedRating = 0;
-let isSubmittingRating = false; // Add flag to prevent double submission
-let isSubmittingRequest = false; // Add flag to prevent double submission
+let isSubmittingRating = false; 
+let isSubmittingRequest = false; 
 
-// API Base URL
 const API_BASE = '/api';
-
-// Initialize app
 document.addEventListener('DOMContentLoaded', function () {
-    // Check for saved authentication
     const savedToken = localStorage.getItem('authToken');
     const savedUser = localStorage.getItem('currentUser');
 
@@ -21,65 +17,41 @@ document.addEventListener('DOMContentLoaded', function () {
         currentUser = JSON.parse(savedUser);
         updateUIForLoggedInUser();
     }
-
-    // Load home page data
     loadHomePageData();
-
-    // Setup event listeners
     setupEventListeners();
 });
 
-// Setup event listeners
 function setupEventListeners() {
-    // Remove existing event listeners first to prevent duplicates
     const forms = ['loginForm', 'registerForm', 'editProfileForm', 'requestForm', 'ratingForm'];
     forms.forEach(formId => {
         const form = document.getElementById(formId);
         if (form) {
-            // Clone the form to remove all event listeners
             const newForm = form.cloneNode(true);
             form.parentNode.replaceChild(newForm, form);
         }
     });
-
-    // Auth forms
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
     document.getElementById('registerForm').addEventListener('submit', handleRegister);
-
-    // Profile forms
     document.getElementById('editProfileForm').addEventListener('submit', handleEditProfile);
-
-    // Request forms
     document.getElementById('requestForm').addEventListener('submit', handleSendRequest);
-
-    // Rating forms
     document.getElementById('ratingForm').addEventListener('submit', handleSubmitRating);
-
-    // Search and filters
     document.getElementById('searchSkills').addEventListener('input', handleSearch);
     document.getElementById('sortBy').addEventListener('change', handleSearch);
     document.getElementById('filterPremium').addEventListener('change', handleSearch);
-
-    // Star rating
     document.querySelectorAll('.star').forEach(star => {
         star.addEventListener('click', function () {
             selectedRating = parseInt(this.dataset.rating);
             updateStarRating();
         });
     });
-
-    // Modal clicks
     window.addEventListener('click', function (e) {
         if (e.target.classList.contains('modal')) {
             e.target.style.display = 'none';
         }
     });
 }
-
-// Authentication functions
 async function handleLogin(e) {
     e.preventDefault();
-
     const formData = new FormData(e.target);
     const email = formData.get('email');
     const password = formData.get('password');
@@ -92,17 +64,13 @@ async function handleLogin(e) {
             },
             body: JSON.stringify({ email, password })
         });
-
         const data = await response.json();
 
         if (response.ok) {
             authToken = data.token;
             currentUser = data.user;
-
-            // Save to localStorage
             localStorage.setItem('authToken', authToken);
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
             updateUIForLoggedInUser();
             showSection('home');
             showSuccess('Login successful!');
@@ -117,7 +85,6 @@ async function handleLogin(e) {
 
 async function handleRegister(e) {
     e.preventDefault();
-
     const formData = new FormData(e.target);
     const name = formData.get('name');
     const email = formData.get('email');
@@ -126,7 +93,6 @@ async function handleRegister(e) {
     const bio = formData.get('bio');
     const skillsToTeach = formData.get('skillsToTeach').split(',').map(s => s.trim()).filter(s => s);
     const skillsToLearn = formData.get('skillsToLearn').split(',').map(s => s.trim()).filter(s => s);
-
     try {
         const response = await fetch(`${API_BASE}/auth/register`, {
             method: 'POST',
@@ -135,17 +101,12 @@ async function handleRegister(e) {
             },
             body: JSON.stringify({ name, email, phone, password, bio, skillsToTeach, skillsToLearn })
         });
-
         const data = await response.json();
-
         if (response.ok) {
             authToken = data.token;
             currentUser = data.user;
-
-            // Save to localStorage
             localStorage.setItem('authToken', authToken);
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
             updateUIForLoggedInUser();
             showSection('home');
             showSuccess('Registration successful! Welcome to SkillSync!');
@@ -163,19 +124,14 @@ function logout() {
     currentUser = null;
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
-
     updateUIForLoggedOutUser();
     showSection('home');
     showSuccess('Logged out successfully!');
 }
-
-// UI update functions
 function updateUIForLoggedInUser() {
     document.getElementById('navAuth').style.display = 'none';
     document.getElementById('navUser').style.display = 'flex';
     document.getElementById('userNameNav').textContent = currentUser.name;
-
-    // Update profile section
     loadProfile();
 }
 
@@ -184,18 +140,12 @@ function updateUIForLoggedOutUser() {
     document.getElementById('navUser').style.display = 'none';
 }
 
-// Section navigation
 function showSection(sectionName) {
-    // Hide all sections
     document.querySelectorAll('.section').forEach(section => {
         section.classList.remove('active');
     });
-
-    // Show selected section
     document.getElementById(sectionName).classList.add('active');
     currentSection = sectionName;
-
-    // Load section data
     switch (sectionName) {
         case 'browse':
             loadBrowseSection();
@@ -211,22 +161,15 @@ function showSection(sectionName) {
             break;
     }
 }
-
-// Home page data
 async function loadHomePageData() {
     try {
-        // Load popular skills
         const skillsResponse = await fetch(`${API_BASE}/skills/popular`);
         const skillsData = await skillsResponse.json();
-
         if (skillsResponse.ok) {
             displayPopularSkills(skillsData.teachableSkills, 'popularSkillsHome');
         }
-
-        // Load user stats
         const usersResponse = await fetch(`${API_BASE}/users`);
         const usersData = await usersResponse.json();
-
         if (usersResponse.ok) {
             document.getElementById('totalUsers').textContent = usersData.users.length;
             document.getElementById('totalSkills').textContent = skillsData.teachableSkills.length;
@@ -236,39 +179,29 @@ async function loadHomePageData() {
         console.error('Error loading home page data:', error);
     }
 }
-
-// Browse section
 async function loadBrowseSection() {
     try {
-        // Load popular skills for filter
         const skillsResponse = await fetch(`${API_BASE}/skills/popular`);
         const skillsData = await skillsResponse.json();
-
         if (skillsResponse.ok) {
             displayPopularSkills(skillsData.teachableSkills, 'popularSkillsFilter');
         }
-
-        // Load users
         await handleSearch();
     } catch (error) {
         console.error('Error loading browse section:', error);
     }
 }
-
 async function handleSearch() {
     const search = document.getElementById('searchSkills').value;
     const sort = document.getElementById('sortBy').value;
     const premium = document.getElementById('filterPremium').value;
-
     try {
         const params = new URLSearchParams();
         if (search) params.append('search', search);
         if (sort) params.append('sort', sort);
         if (premium) params.append('premium', premium);
-
         const response = await fetch(`${API_BASE}/users?${params}`);
         const data = await response.json();
-
         if (response.ok) {
             displayUsers(data.users);
         }
@@ -279,12 +212,10 @@ async function handleSearch() {
 
 function displayUsers(users) {
     const container = document.getElementById('usersGrid');
-
     if (users.length === 0) {
         container.innerHTML = '<p class="loading">No users found matching your criteria.</p>';
         return;
     }
-
     container.innerHTML = users.map(user => `
         <div class="user-card" onclick="showUserModal('${user._id}')">
             <div class="user-info">
@@ -328,19 +259,14 @@ function filterBySkill(skill) {
     }
 }
 
-// User modal
 async function showUserModal(userId) {
     try {
         const response = await fetch(`${API_BASE}/users/${userId}`);
         const data = await response.json();
-
         if (!response.ok) return;
-
         const user = data.user;
-
         const ratingsResponse = await fetch(`${API_BASE}/ratings/user/${userId}`);
         const ratingsData = await ratingsResponse.json();
-
         document.getElementById('userModalBody').innerHTML = `
             <div class="user-profile">
                 <div class="profile-header">
@@ -373,8 +299,7 @@ async function showUserModal(userId) {
                             Request Skill
                         </button>
                     ` : ''}
-                </div>
-                
+                </div>  
                 <div class="profile-skills">
                     <div class="skills-section">
                         <h3>Can Teach</h3>
@@ -389,7 +314,6 @@ async function showUserModal(userId) {
                         </div>
                     </div>
                 </div>
-
                 ${ratingsData.ratings && ratingsData.ratings.length > 0 ? `
                     <div class="profile-ratings">
                         <h3>Recent Ratings</h3>
@@ -414,23 +338,17 @@ async function showUserModal(userId) {
         `;
 
         document.getElementById('userModal').style.display = 'block';
-
     } catch (error) {
         console.error('Error loading user modal:', error);
     }
 }
 
-// Request modal
 function showRequestModal(teacherId) {
     if (!currentUser) {
         showError('Please login to send requests');
         return;
     }
-
-    // Reset the submission flag
     isSubmittingRequest = false;
-
-    // Get teacher's skills
     fetch(`${API_BASE}/users/${teacherId}`)
         .then(response => response.json())
         .then(data => {
@@ -449,26 +367,19 @@ function showRequestModal(teacherId) {
 
 async function handleSendRequest(e) {
     e.preventDefault();
-
-    // Prevent double submission
     if (isSubmittingRequest) {
         return;
     }
-
     isSubmittingRequest = true;
-
-    // Disable submit button
     const submitBtn = e.target.querySelector('button[type="submit"]');
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
     }
-
     const teacherId = document.getElementById('requestTeacherId').value;
     const skillRequested = document.getElementById('requestSkill').value;
     const skillOffered = document.getElementById('requestOffered').value;
     const message = document.getElementById('requestMessage').value;
-
     try {
         const response = await fetch(`${API_BASE}/requests`, {
             method: 'POST',
@@ -478,7 +389,6 @@ async function handleSendRequest(e) {
             },
             body: JSON.stringify({ teacherId, skillRequested, skillOffered, message })
         });
-
         const data = await response.json();
         if (response.ok) {
             showSuccess('Request sent successfully!');
@@ -499,7 +409,6 @@ async function handleSendRequest(e) {
         console.error('Error sending request:', err);
         showError('Network error. Please try again.');
     } finally {
-        // Re-enable submit button
         isSubmittingRequest = false;
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -510,25 +419,17 @@ async function handleSendRequest(e) {
 
 async function loadProfile() {
     if (!currentUser) return;
-
     try {
         const response = await fetch(`${API_BASE}/auth/me`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
             }
         });
-
         const data = await response.json();
-
         if (response.ok) {
             currentUser = data.user;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-            // Debug: log user object
             console.log('Loaded User Data:', currentUser);
-
-            // Update basic profile info
-            // ✅ Corrected: Use currentUser instead of undefined user
             document.getElementById('profileName').textContent = currentUser.name;
             document.getElementById('profileBio').textContent = currentUser.bio || 'No bio available';
             document.getElementById('profilePhone').textContent = currentUser.phone ? `Phone: ${currentUser.phone}` : 'Phone: Not provided';
@@ -536,8 +437,6 @@ async function loadProfile() {
             document.getElementById("profileAvatar").textContent = currentUser.name?.charAt(0).toUpperCase() || '';
             document.getElementById('profileRating').textContent = currentUser.averageRating.toFixed(1);
             document.getElementById('profileTotalRatings').textContent = currentUser.totalRatings;
-
-            // Update subscription info
             const planNames = {
                 'free': 'Free Plan',
                 'monthly': 'Monthly Plan ($9.99/month)',
@@ -545,7 +444,6 @@ async function loadProfile() {
             };
 
             document.getElementById('currentPlan').textContent = planNames[currentUser.subscriptionPlan] || 'Free Plan';
-
             const statusElement = document.getElementById('planStatus');
             if (currentUser.isPremium) {
                 statusElement.textContent = 'Active';
@@ -554,24 +452,18 @@ async function loadProfile() {
                 statusElement.textContent = 'Active';
                 statusElement.style.color = 'var(--text-light)';
             }
-            // Safely render skills
             const teachSkills = currentUser.skillsToTeach || [];
             const learnSkills = currentUser.skillsToLearn || [];
-
             document.getElementById('profileSkillsTeach').innerHTML =
                 teachSkills.length
                     ? teachSkills.map(skill => `<span class="skill-tag ${isPremiumSkill(skill) ? 'premium' : ''}">${skill}</span>`).join('')
                     : '<p>No skills added yet</p>';
-
             document.getElementById('profileSkillsLearn').innerHTML =
                 learnSkills.length
                     ? learnSkills.map(skill => `<span class="skill-tag ${isPremiumSkill(skill) ? 'premium' : ''}">${skill}</span>`).join('')
                     : '<p>No skills added yet</p>';
-
-            // Fetch and render ratings
             const ratingsResponse = await fetch(`${API_BASE}/ratings/user/${currentUser.id}`);
             const ratingsData = await ratingsResponse.json();
-
             if (ratingsResponse.ok && ratingsData.ratings) {
                 document.getElementById('profileRatings').innerHTML = ratingsData.ratings.map(rating => `
                     <div class="rating-item">
@@ -606,14 +498,12 @@ function showEditProfile() {
 
 async function handleEditProfile(e) {
     e.preventDefault();
-
     const formData = new FormData(e.target);
     const name = formData.get('name');
     const phone = formData.get('phone');
     const bio = formData.get('bio');
     const skillsToTeach = formData.get('skillsToTeach').split(',').map(s => s.trim()).filter(s => s);
     const skillsToLearn = formData.get('skillsToLearn').split(',').map(s => s.trim()).filter(s => s);
-
     try {
         const response = await fetch(`${API_BASE}/users/profile`, {
             method: 'PUT',
@@ -625,11 +515,9 @@ async function handleEditProfile(e) {
         });
 
         const data = await response.json();
-
         if (response.ok) {
             currentUser = data.user;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
             showSuccess('Profile updated successfully!');
             closeModal('editProfileModal');
             loadProfile();
@@ -644,7 +532,6 @@ async function handleEditProfile(e) {
 
 async function loadRequests() {
     if (!currentUser) return;
-
     try {
         const response = await fetch(`${API_BASE}/requests/my`, {
             headers: { Authorization: `Bearer ${authToken}` }
@@ -661,28 +548,23 @@ async function loadRequests() {
 function showRequests(evt, tab) {
     if (currentRequestsTab === tab && evt) return;
     currentRequestsTab = tab;
-
     document.querySelectorAll('.requests-tabs .tab-btn')
         .forEach(btn => btn.classList.remove('active'));
     if (evt?.target) evt.target.classList.add('active');
     else document.querySelector(`.tab-btn[data-tab="${tab}"]`)?.classList.add('active');
-
     loadRequests();
 }
 
 function displayRequests(data) {
     const container = document.getElementById('requestsList');
     const requests = currentRequestsTab === 'sent' ? data.sentRequests : data.receivedRequests;
-
     if (!requests || requests.length === 0) {
         container.innerHTML = '<p class="loading">No requests found.</p>';
         return;
     }
-
     container.innerHTML = requests.map(r => {
         const other = currentRequestsTab === 'sent' ? r.teacher : r.requester;
         const isRec = currentRequestsTab === 'received';
-
         return `
       <div class="request-item">
         <div class="request-header">
@@ -730,12 +612,8 @@ async function updateRequestStatus(id, status) {
         showError('Network error. Please try again.');
     }
 }
-
-// Rating functions
 function showRatingModal(requestId, rateeId, skill) {
-    // Reset the submission flag
     isSubmittingRating = false;
-    
     document.getElementById('ratingRequestId').value = requestId;
     document.getElementById('ratingRateeId').value = rateeId;
     document.getElementById('ratingSkill').value = skill;
@@ -752,24 +630,17 @@ function updateStarRating() {
 
 async function handleSubmitRating(e) {
     e.preventDefault();
-    
-    // Prevent double submission
     if (isSubmittingRating) {
         return;
-    }
-    
+    }   
     isSubmittingRating = true;
-    
-    // Disable submit button
     const submitBtn = e.target.querySelector('button[type="submit"]');
     if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
     }
-
     if (selectedRating === 0) {
         showError('Please select a rating');
-        // Re-enable submit button
         isSubmittingRating = false;
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -782,7 +653,6 @@ async function handleSubmitRating(e) {
     const rateeId = document.getElementById('ratingRateeId').value;
     const skill = document.getElementById('ratingSkill').value;
     const comment = document.getElementById('ratingComment').value;
-
     try {
         const response = await fetch(`${API_BASE}/ratings`, {
             method: 'POST',
@@ -792,9 +662,7 @@ async function handleSubmitRating(e) {
             },
             body: JSON.stringify({ rateeId, requestId, rating: selectedRating, comment, skill })
         });
-
         const data = await response.json();
-
         if (response.ok) {
             showSuccess('Rating submitted successfully!');
             closeModal('ratingModal');
@@ -809,7 +677,6 @@ async function handleSubmitRating(e) {
         console.error('Error submitting rating:', error);
         showError('Network error. Please try again.');
     } finally {
-        // Re-enable submit button
         isSubmittingRating = false;
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -818,12 +685,10 @@ async function handleSubmitRating(e) {
     }
 }
 
-// Leaderboard functions
 async function loadLeaderboard() {
     try {
         const response = await fetch(`${API_BASE}/users/leaderboard/top`);
         const data = await response.json();
-
         if (response.ok) {
             displayLeaderboard(data);
         }
@@ -834,26 +699,20 @@ async function loadLeaderboard() {
 
 function showLeaderboard(tab) {
     currentLeaderboardTab = tab;
-
-    // Update tab buttons
     document.querySelectorAll('.leaderboard-tabs .tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     event.target.classList.add('active');
-
-    // Reload leaderboard
     loadLeaderboard();
 }
 
 function displayLeaderboard(data) {
     const container = document.getElementById('leaderboardList');
     const users = currentLeaderboardTab === 'karma' ? data.topKarma : data.topRated;
-
     if (users.length === 0) {
         container.innerHTML = '<p class="loading">No data available.</p>';
         return;
     }
-
     container.innerHTML = users.map((user, index) => `
         <div class="leaderboard-item">
             <div class="leaderboard-rank">${index + 1}</div>
@@ -874,47 +733,34 @@ function displayLeaderboard(data) {
         </div>
     `).join('');
 }
-
-// Utility functions
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
 function showError(message) {
-    // Remove existing alerts
     document.querySelectorAll('.error, .success').forEach(el => el.remove());
-
     const alert = document.createElement('div');
     alert.className = 'error';
     alert.textContent = message;
-
     const main = document.querySelector('.main-content');
     main.insertBefore(alert, main.firstChild);
-
-    // Auto remove after 5 seconds
     setTimeout(() => {
         alert.remove();
     }, 5000);
 }
 
 function showSuccess(message) {
-    // Remove existing alerts
     document.querySelectorAll('.error, .success').forEach(el => el.remove());
-
     const alert = document.createElement('div');
     alert.className = 'success';
     alert.textContent = message;
-
     const main = document.querySelector('.main-content');
     main.insertBefore(alert, main.firstChild);
-
-    // Auto remove after 3 seconds
     setTimeout(() => {
         alert.remove();
     }, 3000);
 }
 
-// Make functions globally available
 window.showSection = showSection;
 window.showUserModal = showUserModal;
 window.showRequestModal = showRequestModal;
@@ -926,8 +772,6 @@ window.updateRequestStatus = updateRequestStatus;
 window.closeModal = closeModal;
 window.logout = logout;
 window.filterBySkill = filterBySkill;
-
-// Premium skills list
 const PREMIUM_SKILLS = [
     'Machine Learning', 'AI', 'Data Science', 'Blockchain', 'Cloud Computing',
     'DevOps', 'Cybersecurity', 'Full-Stack Development', 'Mobile App Development',
@@ -942,13 +786,10 @@ function isPremiumSkill(skill) {
         premiumSkill.toLowerCase().includes(skill.toLowerCase())
     );
 }
-
-// Subscription functions
 async function showSubscriptionModal() {
     try {
         const response = await fetch(`${API_BASE}/users/subscription/plans`);
         const data = await response.json();
-
         if (response.ok) {
             updateSubscriptionModal(data.plans);
             document.getElementById('subscriptionModal').style.display = 'block';
@@ -959,13 +800,10 @@ async function showSubscriptionModal() {
 }
 
 function updateSubscriptionModal(plans) {
-    // Update plan buttons based on current subscription
     const currentPlan = currentUser?.subscriptionPlan || 'free';
-
     document.querySelectorAll('.plan-card .btn').forEach((btn, index) => {
         const planTypes = ['free', 'monthly', 'yearly'];
         const planType = planTypes[index];
-
         if (planType === currentPlan) {
             btn.textContent = 'Current Plan';
             btn.className = 'btn btn-outline';
@@ -983,7 +821,6 @@ async function subscribeToPlan(plan) {
         showError('Please login to subscribe');
         return;
     }
-
     try {
         const response = await fetch(`${API_BASE}/users/subscription/subscribe`, {
             method: 'POST',
@@ -995,18 +832,14 @@ async function subscribeToPlan(plan) {
         });
 
         const data = await response.json();
-
         if (response.ok) {
-            // Update current user data
             currentUser.subscriptionPlan = data.user.subscriptionPlan;
             currentUser.subscriptionExpiry = data.user.subscriptionExpiry;
             currentUser.isPremium = data.user.isPremium;
-
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
             showSuccess(data.message);
             closeModal('subscriptionModal');
-            loadProfile(); // Refresh profile to show new subscription
+            loadProfile(); 
         } else {
             showError(data.error || 'Subscription failed');
         }
@@ -1020,8 +853,6 @@ function showPremiumRequiredModal(message) {
     document.getElementById('premiumRequiredMessage').textContent = message;
     document.getElementById('premiumRequiredModal').style.display = 'block';
 }
-
-// Update global functions
 window.showSubscriptionModal = showSubscriptionModal;
 window.subscribeToPlan = subscribeToPlan;
 window.showPremiumRequiredModal = showPremiumRequiredModal;
