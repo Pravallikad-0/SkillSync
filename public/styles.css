@@ -27,7 +27,6 @@ body {
     min-height: 100vh;
 }
 
-/* Navigation */
 .navbar {
     background: rgba(249, 243, 239, 0.95);
     backdrop-filter: blur(10px);
@@ -111,7 +110,6 @@ body {
     border-radius: 20px;
 }
 
-/* Main Content */
 .main-content {
     margin-top: 80px;
     min-height: calc(100vh - 80px);
@@ -128,7 +126,6 @@ body {
     display: block;
 }
 
-/* Buttons */
 .btn {
     padding: 0.75rem 1.5rem;
     border: none;
@@ -144,7 +141,6 @@ body {
     font-family: inherit;
 }
 
-/* Primary filled button */
 .btn-primary {
     background: linear-gradient(45deg, var(--primary-dark), var(--primary-medium));
     color: white;
@@ -157,7 +153,7 @@ body {
 }
 
 .btn-outline {
-    background-color:#325a77c0 ; /* Light tint for visibility */
+    background-color:#325a77c0 ; 
     border: 2px solid var(--primary-medium);
     color: white;
     transition: all 0.3s ease;
@@ -169,21 +165,15 @@ body {
     border-color: var(--primary-dark);
 }
 
-
-/* Large button size modifier */
 .btn-large {
     padding: 1rem 2rem;
     font-size: 1.1rem;
 }
 
-/* Full-width button */
 .btn-full {
     width: 100%;
 }
 
-
-
-/* Hero Section */
 .hero {
     text-align: center;
     padding: 4rem 2rem;
@@ -254,7 +244,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Features Section */
 .features {
     padding: 4rem 2rem;
     background: var(--primary-lightest);
@@ -306,7 +295,6 @@ body {
     line-height: 1.6;
 }
 
-/* Popular Skills */
 .popular-skills {
     background: rgba(36, 32, 28, 0.1);
     padding: 3rem 2rem;
@@ -348,7 +336,6 @@ body {
     box-shadow: 0 5px 15px var(--shadow);
 }
 
-/* Auth Forms */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -435,7 +422,6 @@ body {
     text-decoration: underline;
 }
 
-/* Browse Section */
 .browse-container {
     background: var(--primary-lightest);
     border-radius: 20px;
@@ -608,16 +594,15 @@ body {
     color: var(--success);
 }
 
-/* Subscription Plans Modal */
 .subscription-plans {
     display: flex;
     flex-direction: row;
     gap: 2rem;
-    justify-content: flex-start;    /* Start-align */
-    flex-wrap: nowrap;              /* Force single row */
-    overflow-x: auto;               /* Enables scroll if needed */
-    padding-bottom: 1rem;           /* Space for scroll bar */
-    scroll-behavior: smooth;        /* Optional: nice scrolling */
+    justify-content: flex-start;   
+    flex-wrap: nowrap;              
+    overflow-x: auto;              
+    padding-bottom: 1rem;           
+    scroll-behavior: smooth;       
 }
 
 
@@ -712,7 +697,6 @@ body {
     border-color: var(--accent-gold);
 }
 
-/* Premium Required Modal */
 .premium-required-content {
     text-align: center;
 }
@@ -752,7 +736,6 @@ body {
     flex-wrap: wrap;
 }
 
-/* Premium skill indicators */
 .skill-tag.premium {
     background: linear-gradient(45deg, var(--accent-gold), #e6b800);
     color: white;
@@ -789,7 +772,6 @@ body {
     padding: 0.3rem 0.8rem;
 }
 
-/* Profile Section */
 .profile-container {
     background: var(--primary-lightest);
     border-radius: 20px;
@@ -916,7 +898,7 @@ body {
     font-size: 0.8rem;
     margin-left: 0.5rem;
 }
-/* ⭐ Interactive star rating (in rating modal) */
+
 .star {
   font-size: 24px;
   color: #ccc;
@@ -924,19 +906,15 @@ body {
   transition: color 0.2s;
 }
 
-/* ⭐ Activated stars (when selected) */
 .star.active {
   color: gold;
 }
 
-/* ⭐ Optional: Hover effect for visual preview */
 .star:hover,
 .star:hover ~ .star {
   color: gold;
 }
 
-
-/* Requests Section */
 .requests-container {
     background: var(--primary-lightest);
     border-radius: 20px;
@@ -1047,7 +1025,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Leaderboard Section */
 .leaderboard-container {
     background: var(--primary-lightest);
     border-radius: 20px;
@@ -1121,7 +1098,6 @@ body {
     color: var(--text-light);
 }
 
-/* Modals */
 .modal {
     display: none;
     position: fixed;
@@ -1170,7 +1146,6 @@ body {
     color: var(--primary-dark);
 }
 
-/* Star Rating */
 .star-rating {
     display: flex;
     gap: 0.5rem;
@@ -1189,7 +1164,6 @@ body {
     color: var(--warning);
 }
 
-/* Loading States */
 .loading {
     text-align: center;
     padding: 2rem;
@@ -1207,7 +1181,6 @@ body {
     100% { opacity: 0; }
 }
 
-/* Error States */
 .error {
     background: #f8d7da;
     color: #721c24;
@@ -1226,7 +1199,6 @@ body {
     border: 1px solid #c3e6cb;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1236,7 +1208,6 @@ body {
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .nav-container {
         flex-direction: column;
