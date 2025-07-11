@@ -27,8 +27,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Pravallikad:maE1hzb7mkw9COls@cluster0.mxb5sfx.mongodb.net/skillsync?retryWrites=true&w=majority&appName=Cluster0';
-
+const MONGODB_URI = YOUR_MONGODB_URL
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB Atlas');
