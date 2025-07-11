@@ -5,23 +5,18 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Register
 router.post('/register', async (req, res) => {
   try {
     const { name, email, phone, password, bio, skillsToTeach, skillsToLearn } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
-
-    // Check if phone number already exists
     const existingPhone = await User.findOne({ phone });
     if (existingPhone) {
       return res.status(400).json({ error: 'Phone number already registered' });
     }
-    // Create new user
     const user = new User({
       name,
       email,
@@ -34,7 +29,6 @@ router.post('/register', async (req, res) => {
 
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || 'skillsync_jwt_secret_key_2024',
@@ -64,29 +58,22 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
-// Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-
-    // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    // Update last active
     user.lastActive = new Date();
     await user.save();
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || 'skillsync_jwt_secret_key_2024',
@@ -117,7 +104,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Get current user
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select('-password');
