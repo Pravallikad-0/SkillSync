@@ -4,19 +4,16 @@ const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Subscription plans and pricing
 const SUBSCRIPTION_PLANS = {
   free: { price: 0, duration: 0, features: ['Basic skill access', 'Community support'] },
   monthly: { price: 9.99, duration: 30, features: ['Premium skills access', 'Premium teachers', 'Priority support', 'Advanced analytics'] },
   yearly: { price: 99.99, duration: 365, features: ['Premium skills access', 'Premium teachers', 'Priority support', 'Advanced analytics', 'Exclusive workshops', '20% discount'] }
 };
 
-// Get subscription plans
 router.get('/subscription/plans', (req, res) => {
   res.json({ plans: SUBSCRIPTION_PLANS });
 });
 
-// Subscribe to a plan
 router.post('/subscription/subscribe', authenticateToken, async (req, res) => {
   try {
     const { plan } = req.body;
@@ -30,7 +27,6 @@ router.post('/subscription/subscribe', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Calculate expiry date
     let expiryDate = null;
     if (plan !== 'free') {
       expiryDate = new Date();
@@ -57,29 +53,22 @@ router.post('/subscription/subscribe', authenticateToken, async (req, res) => {
   }
 });
 
-// Get all users with filtering
 router.get('/', async (req, res) => {
   try {
     const { skill, minKarma, premium, search, sort } = req.query;
     
     let query = {};
-    
-    // Filter by skill
     if (skill) {
       query.skillsToTeach = { $in: [new RegExp(skill, 'i')] };
     }
     
-    // Filter by minimum karma
     if (minKarma) {
       query.skillKarma = { $gte: parseInt(minKarma) };
     }
     
-    // Filter by premium status
     if (premium === 'true') {
       query.subscriptionPlan = { $in: ['monthly', 'yearly'] };
     }
-    
-    // Search by name or skills
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -115,7 +104,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get user by ID
 router.get('/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
@@ -130,7 +118,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Update user profile
 router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { name, phone, bio, skillsToTeach, skillsToLearn } = req.body;
@@ -140,14 +127,13 @@ router.put('/profile', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Check if phone number is being changed and if it's already taken
     if (phone && phone !== user.phone) {
       const existingPhone = await User.findOne({ phone, _id: { $ne: req.userId } });
       if (existingPhone) {
         return res.status(400).json({ error: 'Phone number already registered' });
       }
     }
-    // Update fields
+   
     if (name) user.name = name;
     if (phone) user.phone = phone;
     if (bio !== undefined) user.bio = bio;
@@ -179,7 +165,6 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
-// Get leaderboard
 router.get('/leaderboard/top', async (req, res) => {
   try {
     const topKarma = await User.find()
