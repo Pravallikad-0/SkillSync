@@ -5,7 +5,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const User = require('./User');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Pravallikad:maE1hzb7mkw9COls@cluster0.mxb5sfx.mongodb.net/skillsync?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || <mongodb_url>;
 
 const seedUsers = [
   {
