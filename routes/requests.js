@@ -1,37 +1,32 @@
 const express = require('express');
 const SkillRequest = require('../models/SkillRequest');
 const User = require('../models/User');
+const SkillModule = require('../models/SkillModule');
+const ModuleAccess = require('../models/ModuleAccess');
 const { authenticateToken } = require('../middleware/auth');
-
 const router = express.Router();
-
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { teacherId, skillRequested, skillOffered, message } = req.body;
-
     const requester = await User.findById(req.userId);
     const teacher = await User.findById(teacherId);
     if (!teacher) {
       return res.status(404).json({ error: 'Teacher not found' });
     }
-
     const Skill = require('../models/Skill');
     const skill = await Skill.findOne({ name: new RegExp(skillRequested, 'i') });
-    
     if (skill && skill.isPremium && !requester.isPremium) {
       return res.status(403).json({ 
         error: 'This is a premium skill. Please upgrade your subscription to access it.',
         requiresPremium: true
       });
     }
-
     if (teacher.isPremium && !requester.isPremium) {
       return res.status(403).json({ 
         error: 'This teacher offers premium services. Please upgrade your subscription to learn from premium teachers.',
         requiresPremium: true
       });
     }
-
     if (!teacher.skillsToTeach.includes(skillRequested)) {
       return res.status(400).json({ error: 'Teacher does not offer this skill' });
     }
@@ -42,12 +37,9 @@ router.post('/', authenticateToken, async (req, res) => {
       skillOffered,
       message
     });
-
     await request.save();
-
     await request.populate('requester', 'name email');
     await request.populate('teacher', 'name email');
-
     res.status(201).json({
       message: 'Request sent successfully',
       request
@@ -57,7 +49,6 @@ router.post('/', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 router.get('/my', authenticateToken, async (req, res) => {
   try {
     const sentRequests = await SkillRequest.find({ requester: req.userId })
@@ -77,7 +68,6 @@ router.get('/my', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 router.patch('/:id/status', authenticateToken, async (req, res) => {
   try {
     const { status } = req.body;
@@ -86,7 +76,6 @@ router.patch('/:id/status', authenticateToken, async (req, res) => {
     if (!request) {
       return res.status(404).json({ error: 'Request not found' });
     }
-
     if (status === 'accepted' || status === 'declined') {
       if (request.teacher.toString() !== req.userId) {
         return res.status(403).json({ error: 'Not authorized' });
@@ -96,20 +85,39 @@ router.patch('/:id/status', authenticateToken, async (req, res) => {
         return res.status(403).json({ error: 'Not authorized' });
       }
       request.completedAt = new Date();
-  
       if (request.status === 'accepted') {
         await User.findByIdAndUpdate(request.teacher, {
           $inc: { skillKarma: 5 }
         });
+        const teacherModules = await SkillModule.find({
+          creator: request.teacher,
+          skill: request.skillRequested
+        });
+        for (const module of teacherModules) {
+          try {
+            const existingAccess = await ModuleAccess.findOne({
+              module: module._id,
+              user: request.requester
+            });
+            if (!existingAccess) {
+              await new ModuleAccess({
+                module: module._id,
+                user: request.requester,
+                grantedBy: request.teacher,
+                request: request._id,
+                accessType: 'full'
+              }).save();
+            }
+          } catch (error) {
+            console.error('Error granting module access:', error);
+          }
+        }
       }
     }
-
     request.status = status;
     await request.save();
-
     await request.populate('requester', 'name email');
     await request.populate('teacher', 'name email');
-
     res.json({
       message: 'Request updated successfully',
       request
@@ -119,7 +127,6 @@ router.patch('/:id/status', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const request = await SkillRequest.findById(req.params.id)
@@ -129,12 +136,10 @@ router.get('/:id', authenticateToken, async (req, res) => {
     if (!request) {
       return res.status(404).json({ error: 'Request not found' });
     }
-
     if (request.requester._id.toString() !== req.userId && 
         request.teacher._id.toString() !== req.userId) {
       return res.status(403).json({ error: 'Not authorized' });
     }
-
     res.json({ request });
   } catch (error) {
     console.error('Get request error:', error);
