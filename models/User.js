@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true },
@@ -11,10 +12,16 @@ const userSchema = new mongoose.Schema({
   skillKarma: { type: Number, default: 0 },
   averageRating: { type: Number, default: 0 },
   totalRatings: { type: Number, default: 0 },
-  subscriptionPlan: {type: String, enum: ['free', 'monthly', 'yearly'], default: 'free' },
+  subscriptionPlan: { 
+    type: String, 
+    enum: ['free', 'monthly', 'yearly'], 
+    default: 'free' 
+  },
   subscriptionExpiry: { type: Date },
-  isPremium: {type: Boolean,default: false,
-  get: function() {
+  isPremium: { 
+    type: Boolean, 
+    default: false,
+    get: function() {
       if (this.subscriptionPlan === 'free') return false;
       if (!this.subscriptionExpiry) return false;
       return new Date() < this.subscriptionExpiry;
