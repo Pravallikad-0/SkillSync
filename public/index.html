@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div id="app">
         <nav class="navbar" id="navbar">
@@ -33,6 +34,7 @@
                 </div>
             </div>
         </nav>
+
         <main class="main-content">
             <section id="home" class="section active">
                 <div class="hero">
@@ -63,6 +65,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="features">
                     <h2>Why Choose SkillSync?</h2>
                     <div class="feature-grid">
@@ -159,6 +162,13 @@
                                     placeholder="e.g., AI, Python, Photography">
                                 <small>Separate skills with commas</small>
                             </div>
+                            <div class="form-group">
+                                <label>Upload Learning Modules for Your Skills (Optional)</label>
+                                <small>You can add modules later from your profile</small>
+                                <div id="moduleUploadHint" class="module-hint">
+                                    💡 Create learning modules for your skills to share with students when they request to learn from you
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary btn-full">Create Account</button>
                         </form>
                         <p class="auth-switch">
@@ -196,13 +206,12 @@
             <section id="profile" class="section">
                 <div class="profile-container">
                     <div class="profile-header">
-                         <div class="profile-avatar">
+                        <div class="profile-avatar">
                             <div class="avatar-placeholder" id="profileAvatar"></div>
                         </div>
                         <div class="profile-info">
                             <h2 id="profileName"></h2>
                             <p id="profileBio"></p>
-                            <p id="profilePhone"></p>
                             <div class="profile-stats">
                                 <div class="stat">
                                     <span class="stat-value" id="profileKarma">0</span>
@@ -220,6 +229,7 @@
                         </div>
                         <button class="btn btn-primary" onclick="showEditProfile()">Edit Profile</button>
                     </div>
+
                     <div class="profile-skills">
                         <div class="skills-section">
                             <h3>Skills I Can Teach</h3>
@@ -230,6 +240,7 @@
                             <div class="skill-tags" id="profileSkillsLearn"></div>
                         </div>
                     </div>
+
                     <div class="subscription-section">
                         <h3>Subscription Plan</h3>
                         <div class="subscription-info" id="subscriptionInfo">
@@ -243,6 +254,19 @@
                     <div class="profile-ratings">
                         <h3>Recent Ratings</h3>
                         <div class="ratings-list" id="profileRatings"></div>
+                    </div>
+
+                    <div class="profile-modules">
+                        <div class="modules-header">
+                            <h3>My Learning Modules</h3>
+                            <button class="btn btn-primary" onclick="showCreateModuleModal()">Create Module</button>
+                        </div>
+                        <div class="modules-grid" id="profileModules"></div>
+                    </div>
+
+                    <div class="accessible-modules">
+                        <h3>Modules I Have Access To</h3>
+                        <div class="modules-grid" id="accessibleModules"></div>
                     </div>
                 </div>
             </section>
@@ -399,6 +423,8 @@
         </div>
     </div>
 </div>
+
+
         <div id="ratingModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('ratingModal')">&times;</span>
@@ -427,7 +453,92 @@
                 </div>
             </div>
         </div>
+
+        <div id="createModuleModal" class="modal">
+            <div class="modal-content large-modal">
+                <span class="close" onclick="closeModal('createModuleModal')">&times;</span>
+                <div class="modal-body">
+                    <h3>Create Learning Module</h3>
+                    <form id="createModuleForm" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="moduleTitle">Module Title</label>
+                                <input type="text" id="moduleTitle" name="title" required placeholder="e.g., Python Basics for Beginners">
+                            </div>
+                            <div class="form-group">
+                                <label for="moduleSkill">Skill</label>
+                                <select id="moduleSkill" name="skill" required>
+                                    <option value="">Select a skill</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="moduleDifficulty">Difficulty Level</label>
+                                <select id="moduleDifficulty" name="difficulty">
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="moduleTime">Estimated Time</label>
+                                <input type="text" id="moduleTime" name="estimatedTime" placeholder="e.g., 2-3 hours">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moduleDescription">Description</label>
+                            <textarea id="moduleDescription" name="description" rows="3" required placeholder="Brief description of what students will learn..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moduleContent">Module Content</label>
+                            <textarea id="moduleContent" name="content" rows="8" required placeholder="Write your detailed lesson content here..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modulePrerequisites">Prerequisites (Optional)</label>
+                            <input type="text" id="modulePrerequisites" name="prerequisites" placeholder="e.g., Basic computer knowledge, HTML basics">
+                            <small>Separate with commas</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moduleLearningObjectives">Learning Objectives (Optional)</label>
+                            <input type="text" id="moduleLearningObjectives" name="learningObjectives" placeholder="e.g., Understand variables, Write functions, Debug code">
+                            <small>Separate with commas</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moduleResources">Upload Resources (Optional)</label>
+                            <input type="file" id="moduleResources" name="resources" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.mp4,.avi,.mov">
+                            <small>Images, documents, videos (max 10MB each, up to 5 files)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="modulePublic" name="isPublic">
+                                Make this module publicly visible
+                            </label>
+                            <small>Public modules can be discovered by all users</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Create Module</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewModuleModal" class="modal">
+            <div class="modal-content large-modal">
+                <span class="close" onclick="closeModal('viewModuleModal')">&times;</span>
+                <div class="modal-body" id="viewModuleContent">
+                </div>
+            </div>
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 
