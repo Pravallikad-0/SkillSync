@@ -2,13 +2,10 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { authenticateToken } = require('../middleware/auth');
-
 const router = express.Router();
-
 router.post('/register', async (req, res) => {
   try {
     const { name, email, phone, password, bio, skillsToTeach, skillsToLearn } = req.body;
-
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
@@ -28,7 +25,6 @@ router.post('/register', async (req, res) => {
     });
 
     await user.save();
-
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || 'skillsync_jwt_secret_key_2024',
@@ -61,7 +57,6 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
@@ -70,10 +65,8 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-
     user.lastActive = new Date();
     await user.save();
-
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET || 'skillsync_jwt_secret_key_2024',
@@ -103,14 +96,12 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 router.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select('-password');
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-
     res.json({
       user: {
         id: user._id,
